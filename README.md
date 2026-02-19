@@ -1,6 +1,14 @@
-# Holo2-30B-A3B-GGUF Deployment Guide
+# Local LLM Deployment Guide
 
-This project provides instructions and a client for running and interacting with the [mradermacher/Holo2-30B-A3B-GGUF](https://huggingface.co/mradermacher/Holo2-30B-A3B-GGUF) model locally using various backends.
+This project provides instructions and a client for running and interacting with local LLMs (like Holo2-30B-A3B and Qwen2.5-Omni) using various backends.
+
+## Models
+
+### 1. Holo2-30B-A3B-GGUF
+[mradermacher/Holo2-30B-A3B-GGUF](https://huggingface.co/mradermacher/Holo2-30B-A3B-GGUF)
+
+### 2. Qwen2.5-Omni-7B
+[rockn/Qwen2.5-Omni-7B-Q4_K_M](https://ollama.com/rockn/Qwen2.5-Omni-7B-Q4_K_M)
 
 ## Backends
 
@@ -10,7 +18,7 @@ This project provides instructions and a client for running and interacting with
 **Installation:**
 Visit [lemonade-server.ai](https://lemonade-server.ai/) to download the installer for your platform.
 
-**Pull and Run the Model:**
+**Pull and Run Holo2:**
 ```bash
 # Pull the model
 lemonade-server pull user.Holo2-30B-A3B-GGUF --checkpoint mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M --recipe llamacpp
@@ -23,9 +31,14 @@ lemonade-server run user.Holo2-30B-A3B-GGUF
 ### 2. Ollama
 [Ollama](https://ollama.com/) is a popular tool for running LLMs locally.
 
-**Run the Model:**
+**Run Holo2:**
 ```bash
 ollama run hf.co/mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
+```
+
+**Run Qwen2.5-Omni:**
+```bash
+ollama run rockn/Qwen2.5-Omni-7B-Q4_K_M
 ```
 
 ### 3. LocalAI
@@ -36,7 +49,7 @@ ollama run hf.co/mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
 curl https://localai.io/install.sh
 ```
 
-**Run the Model:**
+**Run Holo2:**
 ```bash
 local-ai run huggingface://mradermacher/Holo2-30B-A3B-GGUF/Holo2-30B-A3B.IQ4_XS.gguf
 ```
@@ -48,18 +61,21 @@ local-ai run huggingface://mradermacher/Holo2-30B-A3B-GGUF/Holo2-30B-A3B.IQ4_XS.
 - **macOS:** `brew install llama.cpp`
 - **Windows (WinGet):** `winget install llama.cpp`
 
-**Run Server (OpenAI-compatible):**
+**Run Holo2 Server (OpenAI-compatible):**
 ```bash
 llama-server -hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
 ```
 
+**Run Holo2 CLI Inference:**
+```bash
+llama-cli -hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
+```
+
 ### 5. Other Compatible Applications
-This model can also be run in many other local AI environments:
-- **LM Studio:** Search for `mradermacher/Holo2-30B-A3B-GGUF` and download the GGUF.
-- **Jan:** Add the model path to your Jan settings.
-- **LM Studio / Jan / Jellybox:** Use the built-in model search/import for GGUF files.
+These models can also be run in many other local AI environments:
+- **LM Studio:** Search for models and download GGUFs.
+- **Jan:** Add model paths to your Jan settings.
 - **MLX LM (Apple Silicon):** `pip install mlx-lm` and use `mlx_lm.generate`.
-- **vLLM / SGLang:** Primarily for server-side high-throughput inference.
 
 ## API Integration
 

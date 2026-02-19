@@ -10,6 +10,9 @@ This project provides instructions and a client for running and interacting with
 ### 2. Qwen2.5-Omni-7B
 [rockn/Qwen2.5-Omni-7B-Q4_K_M](https://ollama.com/rockn/Qwen2.5-Omni-7B-Q4_K_M)
 
+### 3. SmoLM2
+[Ollama: smollm2](https://ollama.com/library/smollm2)
+
 ## Backends
 
 ### 1. Lemonade Server
@@ -26,19 +29,19 @@ lemonade-server pull user.Holo2-30B-A3B-GGUF --checkpoint mradermacher/Holo2-30B
 # Run the model
 lemonade-server run user.Holo2-30B-A3B-GGUF
 ```
-*Note: If installed from source, use `lemonade-server-dev` instead.*
 
 ### 2. Ollama
 [Ollama](https://ollama.com/) is a popular tool for running LLMs locally.
 
-**Run Holo2:**
+**Installation:**
+- **Linux:** `curl -fsSL https://ollama.com/install.sh | sh`
+- **Windows (PowerShell):** `irm https://ollama.com/install.ps1 | iex`
+
+**Run Models:**
 ```bash
 ollama run hf.co/mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
-```
-
-**Run Qwen2.5-Omni:**
-```bash
 ollama run rockn/Qwen2.5-Omni-7B-Q4_K_M
+ollama run smollm2
 ```
 
 ### 3. LocalAI
@@ -49,11 +52,6 @@ ollama run rockn/Qwen2.5-Omni-7B-Q4_K_M
 curl https://localai.io/install.sh
 ```
 
-**Run Holo2:**
-```bash
-local-ai run huggingface://mradermacher/Holo2-30B-A3B-GGUF/Holo2-30B-A3B.IQ4_XS.gguf
-```
-
 ### 4. llama.cpp
 [llama.cpp](https://github.com/ggerganov/llama.cpp) provides a lightweight C++ implementation for inference.
 
@@ -61,29 +59,55 @@ local-ai run huggingface://mradermacher/Holo2-30B-A3B-GGUF/Holo2-30B-A3B.IQ4_XS.
 - **macOS:** `brew install llama.cpp`
 - **Windows (WinGet):** `winget install llama.cpp`
 
-**Run Holo2 Server (OpenAI-compatible):**
+**Run Server:**
 ```bash
 llama-server -hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
 ```
 
-**Run Holo2 CLI Inference:**
-```bash
-llama-cli -hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
-```
-
-### 5. Other Compatible Applications
-These models can also be run in many other local AI environments:
-- **LM Studio:** Search for models and download GGUFs.
-- **Jan:** Add model paths to your Jan settings.
-- **MLX LM (Apple Silicon):** `pip install mlx-lm` and use `mlx_lm.generate`.
-
 ## API Integration
 
-All the above tools provide OpenAI-compatible API endpoints at `/v1/chat/completions` (OpenAI standard) or equivalent local paths.
+### Ollama API Examples
 
-### Python Client
-You can use the provided `client.py` to interact with your local server.
+#### Curl
+```bash
+curl http://localhost:11434/api/chat -d '{
+  "model": "smollm2",
+  "messages": [{"role": "user", "content": "Hello!"}]
+}'
+```
 
+#### Python (ollama-python)
+```bash
+pip install ollama
+```
+```python
+from ollama import chat
+
+response = chat(
+    model='smollm2',
+    messages=[{'role': 'user', 'content': 'Hello!'}],
+)
+print(response.message.content)
+```
+
+#### JavaScript (ollama-js)
+```bash
+npm install ollama
+```
+```javascript
+import ollama from 'ollama'
+
+const response = await ollama.chat({
+  model: 'smollm2',
+  messages: [{role: 'user', content: 'Hello!'}],
+})
+console.log(response.message.content)
+```
+
+### Generic OpenAI-compatible Client
+Many backends (Lemonade, LocalAI, llama-server, and Ollama) support the OpenAI API standard.
+
+#### Python Client (Provided)
 **Setup:**
 ```bash
 pip install -r requirements.txt

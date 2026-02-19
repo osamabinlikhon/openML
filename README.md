@@ -64,6 +64,14 @@ curl https://localai.io/install.sh
 llama-server -hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
 ```
 
+### 5. Opencode Server
+[Opencode](https://github.com/opencode-ai) is a programmable AI server with a type-safe SDK.
+
+**Installation:**
+```bash
+npm install @opencode-ai/sdk
+```
+
 ## API Integration
 
 ### Ollama API Examples
@@ -90,18 +98,55 @@ response = chat(
 print(response.message.content)
 ```
 
-#### JavaScript (ollama-js)
-```bash
-npm install ollama
-```
-```javascript
-import ollama from 'ollama'
+### Opencode SDK (JS/TS)
+The Opencode SDK provides a type-safe client for interacting with the server.
 
-const response = await ollama.chat({
-  model: 'smollm2',
-  messages: [{role: 'user', content: 'Hello!'}],
+**Installation:**
+```bash
+npm install @opencode-ai/sdk
+```
+
+**Create Client and Server:**
+```javascript
+import { createOpencode } from "@opencode-ai/sdk"
+
+// This starts both a server and a client
+const { client } = await createOpencode({
+  config: {
+    model: "anthropic/claude-3-5-sonnet-20241022",
+  },
 })
-console.log(response.message.content)
+```
+
+**Client Only (Connect to running server):**
+```javascript
+import { createOpencodeClient } from "@opencode-ai/sdk"
+
+const client = createOpencodeClient({
+  baseUrl: "http://localhost:4096",
+})
+```
+
+**Structured Output Example:**
+```javascript
+const result = await client.session.prompt({
+  path: { id: sessionId },
+  body: {
+    parts: [{ type: "text", text: "Research Anthropic and provide company info" }],
+    format: {
+      type: "json_schema",
+      schema: {
+        type: "object",
+        properties: {
+          company: { type: "string" },
+          founded: { type: "number" },
+        },
+        required: ["company", "founded"],
+      },
+    },
+  },
+})
+console.log(result.data.info.structured_output)
 ```
 
 ### Generic OpenAI-compatible Client

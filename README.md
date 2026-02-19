@@ -36,7 +36,33 @@ lemonade-server run user.Holo2-30B-A3B-GGUF
 ollama run smollm2
 ```
 
-### 3. Cloudflare AI Gateway
+### 3. Wasmer
+[Wasmer](https://wasmer.io/) allows you to run AI models as WebAssembly modules, ensuring portability and security.
+
+**Run an AI model:**
+```bash
+wasmer run wasmer/llama-cpp --hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
+```
+
+**Wasmer Manifest (`wasmer.toml`):**
+To publish or configure your AI application for Wasmer, you use a `wasmer.toml` file:
+```toml
+[package]
+name = "my-user/my-ai-app"
+version = "0.1.0"
+description = "My local AI application"
+license = "MIT"
+
+[[command]]
+name = "run-ai"
+module = "wasmer/llama-cpp"
+runner = "wasi"
+
+[command.annotations.wasi]
+main-args = ["--hf", "mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M"]
+```
+
+### 4. Cloudflare AI Gateway
 [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/) allows you to observe and control your AI applications.
 
 **OpenAI Compatible Endpoint:**
@@ -50,24 +76,7 @@ curl -X POST https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/comp
   }'
 ```
 
-**Cloudflare Workers Example:**
-```typescript
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const response = await env.AI.run("workers-ai/@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
-      prompt: "What is Cloudflare?",
-    }, {
-      gateway: { id: "open-ml" },
-    });
-    return Response.json(response);
-  },
-};
-```
-
-**Dynamic Routing:**
-Cloudflare AI Gateway supports **Dynamic Routing**, enabling A/B testing, fallbacks, and rate limiting through a visual interface or JSON configuration. You can call a route using `dynamic/{route_name}` in place of the model name.
-
-### 4. llama.cpp
+### 5. llama.cpp
 [llama.cpp](https://github.com/ggerganov/llama.cpp) provides a lightweight C++ implementation for inference.
 
 **Run Server:**
@@ -75,7 +84,7 @@ Cloudflare AI Gateway supports **Dynamic Routing**, enabling A/B testing, fallba
 llama-server -hf mradermacher/Holo2-30B-A3B-GGUF:Q4_K_M
 ```
 
-### 5. Opencode Server
+### 6. Opencode Server
 [Opencode](https://github.com/opencode-ai) is a programmable AI server with a type-safe SDK.
 
 ## API Integration
@@ -97,7 +106,7 @@ const { client } = await createOpencode({
 ```
 
 ### Generic OpenAI-compatible Client (Python)
-Works with Lemonade, LocalAI, llama-server, Ollama, and Cloudflare AI Gateway.
+Works with Lemonade, LocalAI, llama-server, Ollama, Cloudflare AI Gateway, and Wasmer (if running a server).
 
 **Usage:**
 ```bash
